@@ -37,8 +37,36 @@
   }
 }
 
+.menu-container {
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px;
+  background-color: black; 
+  z-index: 1;
+}
+
+.menu {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 5px;
+}
+
+.logo {
+  max-width: 100%;
+  width: 80px;
+}
+
 .app-container {
   padding: 20px;
+  color: white;
+}
+
+.movie-link {
+  color: white;
+
 }
 
 .movie-grind {

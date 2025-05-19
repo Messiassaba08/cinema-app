@@ -1,14 +1,23 @@
 import React from "react";
+import { useState } from "react";
 import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 import { movies } from "./data/movies"; // Presumo que você tenha um arquivo de dados de filmes
 import Site1 from "./pages/1_ticket";
 import Site2 from "./pages/2_ticket";
 import Site3 from "./pages/3_ticket";
 import "./App.css";
+import DropdownMenu from "./DropDownMenu";
 
 function App() {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   return (
     <Router>
+      <div className="menu-container">
+        <div className="menu">
+          <img src="/logo.png" alt="" className="logo" />
+        </div>
+        <DropdownMenu isLoggedIn={isLoggedIn} />
+      </div>
       <div className="app-container">
         <h1>Filmes em Cartaz</h1>
         <div className="movie-grid">
