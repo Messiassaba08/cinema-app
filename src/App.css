@@ -1,3 +1,6 @@
+@import "~slick-carousel/slick/slick.css";
+@import "~slick-carousel/slick/slick-theme.css";
+
 .App {
   text-align: center;
 }
@@ -66,7 +69,8 @@
 
 .movie-link {
   color: white;
-
+  text-decoration: none;
+  font-weight: bold;
 }
 
 .movie-grind {
@@ -76,5 +80,72 @@
 }
 
 .movie-card {
+  padding: 10px;
   text-align: center;
+}
+
+.movie-card img {
+  border-radius: 8px;
+  max-width: 100%;
+  height: auto;
+}
+
+.carousel-container {
+  position: absolute;
+  width: 90%;
+  overflow: hidden;
+  padding: 20px 40px;
+}
+
+.carousel-track {
+  display: flex;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  gap: 20px;
+  padding-bottom: 10px;
+  padding-right: 20px;
+}
+
+.carousel-track::-webkit-scrollbar {
+  display: none; /* esconde a barra de rolagem */
+}
+
+.movie-card {
+  flex: 0 0 auto;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.movie-card:hover {
+  transform: scale(1.1);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+  z-index: 1;
+}
+
+.arrow-button {
+  position: fixed;
+  top: 50%;
+  transform: translateY(-50%);
+  background-color: white;
+  border: none;
+  cursor: pointer;
+  font-size: 2rem;
+  z-index: 2;
+  padding: 0 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  border-radius: 50%;
+  transition: background-color 0.2s ease;
+}
+
+.arrow-button:hover {
+  background-color: #eee;
+}
+
+.arrow-left {
+  top: 370px;
+  left: 10px;
+}
+
+.arrow-right {
+  top: 370px;
+  right: 10px;
 }

@@ -1,7 +1,6 @@
-import React from "react";
-import { useState } from "react";
+import React, { useState } from "react";
 import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
-import { movies } from "./data/movies"; // Presumo que você tenha um arquivo de dados de filmes
+import { movies } from "./data/movies";
 import Site1 from "./pages/1_ticket";
 import Site2 from "./pages/2_ticket";
 import Site3 from "./pages/3_ticket";
@@ -10,34 +9,61 @@ import DropdownMenu from "./DropDownMenu";
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+
   return (
     <Router>
       <div className="menu-container">
         <div className="menu">
-          <img src="/logo.png" alt="" className="logo" />
+          <img src="/logo.png" alt="Logo" className="logo" />
         </div>
         <DropdownMenu isLoggedIn={isLoggedIn} />
       </div>
+
       <div className="app-container">
         <h1>Filmes em Cartaz</h1>
-        <div className="movie-grid">
-          {movies.map((movie) => (
-            <div key={movie.id} className="movie-card">
-              {/* Transformar a imagem em link */}
-              <Link to={`/movie/${movie.id}`} className="movie-link">
-                <img src={movie.posterUrl} alt={movie.title} width="150" />
-              </Link>
 
-              {/* Transformar o nome em link */}
-              <Link to={`/movie/${movie.id}`} className="movie-link">
-                <p>{movie.title}</p>
-              </Link>
-            </div>
-          ))}
+        <div className="carousel-container">
+          <button
+            className="arrow-button arrow-left"
+            onClick={() => {
+              document.getElementById("carousel")?.scrollBy({
+                left: -300,
+                behavior: "smooth",
+              });
+            }}
+          >
+            ‹
+          </button>
+
+          <div className="carousel-track" id="carousel">
+            {movies.map((movie) => (
+              <div key={movie.id} className="movie-card">
+                <Link to={`/movie/${movie.id}`} className="movie-link">
+                  <img src={movie.posterUrl} alt={movie.title} width="150" />
+                </Link>
+                <Link to={`/movie/${movie.id}`} className="movie-link">
+                  <p style={{ textAlign: "center", marginTop: "8px" }}>
+                    {movie.title}
+                  </p>
+                </Link>
+              </div>
+            ))}
+          </div>
+
+          <button
+            className="arrow-button arrow-right"
+            onClick={() => {
+              document.getElementById("carousel")?.scrollBy({
+                left: 300,
+                behavior: "smooth",
+              });
+            }}
+          >
+            ›
+          </button>
         </div>
       </div>
 
-      {/* Definindo as rotas para os filmes */}
       <Routes>
         <Route path="/movie/1" element={<Site1 />} />
         <Route path="/movie/2" element={<Site2 />} />
