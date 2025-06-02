@@ -1,0 +1,47 @@
+.seat-page {
+  text-align: center;
+  padding: 20px;
+}
+
+.screen {
+  margin: 20px auto;
+  width: 60%;
+  background: #ccc;
+  padding: 10px;
+  border-radius: 5px;
+  font-weight: bold;
+}
+
+.seat-grid {
+  display: grid;
+  grid-template-columns: repeat(8, 40px);
+  gap: 10px;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.seat {
+  width: 40px;
+  height: 40px;
+  background-color: #eee;
+  border: 1px solid #ccc;
+  line-height: 40px;
+  text-align: center;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.seat.selected {
+  background-color: #6c6;
+}
+
+.confirm-button {
+  margin-top: 20px;
+  padding: 10px 20px;
+  font-weight: bold;
+  background-color: #4287f5;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}

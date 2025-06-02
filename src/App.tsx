@@ -4,8 +4,56 @@ import { movies } from "./data/movies";
 import Site1 from "./pages/1_ticket";
 import Site2 from "./pages/2_ticket";
 import Site3 from "./pages/3_ticket";
+import SeatSelection from "./pages/SeatSelection";
 import "./App.css";
 import DropdownMenu from "./DropDownMenu";
+
+function Home() {
+  return (
+    <div className="app-container">
+      <h1>Filmes em Cartaz</h1>
+
+      <div className="carousel-container">
+        <button
+          className="arrow-button arrow-left"
+          onClick={() => {
+            document.getElementById("carousel")?.scrollBy({
+              left: -300,
+              behavior: "smooth",
+            });
+          }}
+        >
+          ‹
+        </button>
+
+        <div className="carousel-track" id="carousel">
+          {movies.map((movie) => (
+            <div key={movie.id} className="movie-card">
+              <Link to={`/movie/${movie.id}/seats`} className="movie-link">
+                <img src={movie.posterUrl} alt={movie.title} width="150" />
+                <p style={{ textAlign: "center", marginTop: "8px" }}>
+                  {movie.title}
+                </p>
+              </Link>
+            </div>
+          ))}
+        </div>
+
+        <button
+          className="arrow-button arrow-right"
+          onClick={() => {
+            document.getElementById("carousel")?.scrollBy({
+              left: 300,
+              behavior: "smooth",
+            });
+          }}
+        >
+          ›
+        </button>
+      </div>
+    </div>
+  );
+}
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -19,55 +67,12 @@ function App() {
         <DropdownMenu isLoggedIn={isLoggedIn} />
       </div>
 
-      <div className="app-container">
-        <h1>Filmes em Cartaz</h1>
-
-        <div className="carousel-container">
-          <button
-            className="arrow-button arrow-left"
-            onClick={() => {
-              document.getElementById("carousel")?.scrollBy({
-                left: -300,
-                behavior: "smooth",
-              });
-            }}
-          >
-            ‹
-          </button>
-
-          <div className="carousel-track" id="carousel">
-            {movies.map((movie) => (
-              <div key={movie.id} className="movie-card">
-                <Link to={`/movie/${movie.id}`} className="movie-link">
-                  <img src={movie.posterUrl} alt={movie.title} width="150" />
-                </Link>
-                <Link to={`/movie/${movie.id}`} className="movie-link">
-                  <p style={{ textAlign: "center", marginTop: "8px" }}>
-                    {movie.title}
-                  </p>
-                </Link>
-              </div>
-            ))}
-          </div>
-
-          <button
-            className="arrow-button arrow-right"
-            onClick={() => {
-              document.getElementById("carousel")?.scrollBy({
-                left: 300,
-                behavior: "smooth",
-              });
-            }}
-          >
-            ›
-          </button>
-        </div>
-      </div>
-
       <Routes>
+        <Route path="/" element={<Home />} />
         <Route path="/movie/1" element={<Site1 />} />
         <Route path="/movie/2" element={<Site2 />} />
         <Route path="/movie/3" element={<Site3 />} />
+        <Route path="/movie/:id/seats" element={<SeatSelection />} />
       </Routes>
     </Router>
   );
