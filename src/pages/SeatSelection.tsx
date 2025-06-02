@@ -28,6 +28,12 @@ function SeatSelection() {
   return (
     <div className="seat-page">
       <h2>Selecionar Assentos - {movie.title}</h2>
+
+      {/* Botão de Voltar */}
+      <button onClick={() => navigate("/")} className="back-button">
+        ← Voltar para filmes
+      </button>
+
       <div className="screen">Tela</div>
       <div className="seat-grid">
         {Array.from({ length: ROWS * COLS }, (_, i) => {
@@ -45,6 +51,7 @@ function SeatSelection() {
           );
         })}
       </div>
+
       <button onClick={handleConfirm} className="confirm-button">
         Confirmar Assentos
       </button>
