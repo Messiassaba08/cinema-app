@@ -1,0 +1,48 @@
+h2 {
+    font-size: 3rem;
+}
+
+.login-container {
+    display: flex;
+    height: 50rem;
+    align-items: center;
+    justify-content: center;
+}
+
+.login {
+    background-color: rgba(0, 0, 0, 0.5);
+    box-shadow: 2px 4px 6px rgba(0, 0, 0, 0.3);
+    border-radius: 3%;
+    width: 50rem;
+    height: 30rem;
+    display: flex;
+    flex-direction: column; 
+    align-items: center;
+    padding-top: 2rem;
+    gap: 1.5rem; 
+    font-size: 25px;
+}
+
+.input {
+    border-radius: 5%;
+    width: 30rem;
+    height: 2rem;
+}
+
+.button {
+    font-size: 20px;
+    cursor: pointer;
+    color: white;
+    background-color: rgba(47, 0, 255, 0.562);
+    width: 15rem;
+    height: 2.5rem;
+    display: block;
+    border-radius: 5%;        
+    margin: 1rem auto; 
+    font-weight: bold;
+    border-style: none;
+}
+
+.button:hover {
+    background-color: #0065a0; 
+}

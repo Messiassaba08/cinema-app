@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import "../pages/login.css"
 import { useNavigate } from "react-router-dom";
 
 interface LoginProps {
@@ -24,32 +25,36 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
   };
 
   return (
-    <div style={{ maxWidth: 300, margin: "auto", padding: 20 }}>
-      <h2>Login</h2>
-      <form onSubmit={handleSubmit}>
-        <label>Email:</label>
-        <br />
-        <input
-          type="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
-        />
-        <br />
-        <br />
-        <label>Senha:</label>
-        <br />
-        <input
-          type="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-        />
-        <br />
-        <br />
-        {error && <div style={{ color: "red" }}>{error}</div>}
-        <button type="submit">Entrar</button>
-      </form>
+    <div className="login-container">
+      <div className="login">
+        <h2>Login</h2>
+        <form onSubmit={handleSubmit}>
+          <label>Email:</label>
+          <br />
+          <input
+            type="email" 
+            className="input"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+          />
+          <br />
+          <br />
+          <label>Senha:</label>
+          <br />
+          <input
+            type="password"
+            className="input"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+          />
+          <br />
+          <br />
+          {error && <div style={{ color: "red" }}>{error}</div>}
+          <button className="button" type="submit">Entrar</button>
+        </form>
+      </div>
     </div>
   );
 };
