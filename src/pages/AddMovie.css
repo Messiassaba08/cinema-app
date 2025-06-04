@@ -1,0 +1,66 @@
+.add-movie-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 80vh; /* Ajuste conforme necessário */
+  background-color: #1a1a1a; /* Fundo escuro */
+}
+
+.add-movie-form {
+  background-color: #2c2c2c; /* Fundo do formulário */
+  padding: 30px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+  color: #f0f0f0;
+  width: 100%;
+  max-width: 400px;
+  text-align: center;
+}
+
+.add-movie-form h2 {
+  color: #00a00d; /* Cor de destaque */
+  margin-bottom: 25px;
+}
+
+.add-movie-form label {
+  display: block;
+  text-align: left;
+  margin-bottom: 8px;
+  font-weight: bold;
+}
+
+.add-movie-form .input {
+  /* Usando a classe 'input' do login.css se for o caso */
+  width: calc(100% - 20px); /* Ajuste para padding */
+  padding: 10px;
+  margin-bottom: 20px;
+  border: 1px solid #555;
+  border-radius: 4px;
+  background-color: #3a3a3a;
+  color: #f0f0f0;
+}
+
+.add-movie-form .input:focus {
+  outline: none;
+  border-color: #00a00d;
+  box-shadow: 0 0 5px rgba(0, 160, 13, 0.5);
+}
+
+.add-movie-form .button {
+  /* Usando a classe 'button' do login.css se for o caso */
+  background-color: rgba(47, 0, 255, 0.562); /* Azul */
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1em;
+  font-weight: bold;
+  transition: background-color 0.3s ease;
+  width: 100%;
+  margin-top: 10px;
+}
+
+.add-movie-form .button:hover {
+  background-color: #0065a0;
+}

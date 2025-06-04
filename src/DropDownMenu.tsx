@@ -1,20 +1,20 @@
 import React, { useState, useRef, useEffect } from "react";
+import { Link } from "react-router-dom";
 import "./DropDownMenu.css";
 
 type Props = {
   isLoggedIn: boolean;
+  onLogout: () => void;
 };
 
-const DropdownMenu: React.FC<Props> = ({ isLoggedIn }) => {
+const DropdownMenu: React.FC<Props> = ({ isLoggedIn, onLogout }) => {
   const [open, setOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
 
+  // Efeito para fechar o dropdown ao clicar fora dele
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
-      if (
-        menuRef.current &&
-        !menuRef.current.contains(e.target as Node)
-      ) {
+      if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
         setOpen(false);
       }
     };
@@ -22,6 +22,17 @@ const DropdownMenu: React.FC<Props> = ({ isLoggedIn }) => {
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
+
+  // Fecha o dropdown ao clicar em um item de link
+  const handleLinkClick = () => {
+    setOpen(false);
+  };
+
+  // Lida com o logout e fecha o dropdown
+  const handleLogoutClick = () => {
+    onLogout();
+    setOpen(false);
+  };
 
   return (
     <div className="dropdown-container" ref={menuRef}>
@@ -38,27 +49,43 @@ const DropdownMenu: React.FC<Props> = ({ isLoggedIn }) => {
           {!isLoggedIn ? (
             <>
               <li>
-                <a href="/login" className="block px-4 py-2 hover:bg-gray-100">
+                <Link
+                  to="/login"
+                  className="block px-4 py-2 hover:bg-gray-100"
+                  onClick={handleLinkClick}
+                >
                   Login
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="/register" className="block px-4 py-2 hover:bg-gray-100">
+                <Link
+                  to="/register"
+                  className="block px-4 py-2 hover:bg-gray-100"
+                  onClick={handleLinkClick}
+                >
                   Criar Conta
-                </a>
+                </Link>
               </li>
             </>
           ) : (
             <>
               <li>
-                <a href="/profile" className="block px-4 py-2 hover:bg-gray-100">
+                <Link
+                  to="/profile"
+                  className="block px-4 py-2 hover:bg-gray-100"
+                  onClick={handleLinkClick}
+                >
                   Perfil
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="/logout" className="block px-4 py-2 hover:bg-gray-100">
+                {/* Botão de Sair com as mesmas classes de estilo dos Links */}
+                <button
+                  onClick={handleLogoutClick}
+                  className="block px-4 py-2 hover:bg-gray-100 w-full text-left"
+                >
                   Sair
-                </a>
+                </button>
               </li>
             </>
           )}

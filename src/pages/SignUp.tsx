@@ -1,6 +1,6 @@
-import React, { useState } from "react";
-import "../pages/login.css";
-import { useNavigate, Link } from "react-router-dom"; // Importe Link também
+import React, { useState, FormEvent } from "react";
+import { useNavigate, Link } from "react-router-dom"; // Importe Link
+import "../pages/login.css"; // Assumindo que você quer usar o mesmo CSS para ambos
 
 // Interface para o tipo de usuário
 interface User {
@@ -8,17 +8,13 @@ interface User {
   password?: string;
 }
 
-interface LoginProps {
-  onLogin: () => void;
-}
-
-const Login: React.FC<LoginProps> = ({ onLogin }) => {
+const SignUp: React.FC = () => {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [error, setError] = useState<string>("");
   const navigate = useNavigate();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSignUp = (e: FormEvent) => {
     e.preventDefault();
     setError(""); // Limpa erros anteriores
 
@@ -27,38 +23,40 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
       return;
     }
 
-    // Carregar usuários do localStorage
+    // Carregar usuários existentes do localStorage
     const storedUsers = localStorage.getItem("users");
     const users: User[] = storedUsers ? JSON.parse(storedUsers) : [];
 
-    // Encontrar o usuário com o email e senha correspondentes
-    const foundUser = users.find(
-      (user) => user.email === email && user.password === password
-    );
+    // Verificar se o email já está cadastrado
+    const emailExists = users.some((user) => user.email === email);
 
-    if (foundUser) {
-      // Login bem-sucedido
-      localStorage.setItem("currentUser", JSON.stringify(foundUser)); // Salva o usuário logado
-      onLogin(); // Atualiza o estado de login no App
-      navigate("/"); // Redireciona para a página principal
-    } else {
-      // Login falhou
+    if (emailExists) {
       setError(
-        "Email ou senha inválidos. Verifique suas credenciais ou crie uma conta."
+        "Este email já está cadastrado. Tente fazer login ou use outro email."
       );
+      return;
     }
+
+    // Adicionar o novo usuário
+    const newUser: User = { email, password }; // Em um app real, a senha seria hash
+    users.push(newUser);
+    localStorage.setItem("users", JSON.stringify(users)); // Salva a lista atualizada
+
+    alert("Conta criada com sucesso! Você já pode fazer login.");
+    navigate("/login");
   };
 
   return (
     <div className="login-container">
       <div className="login">
-        <h2>Login</h2>
-        <form onSubmit={handleSubmit}>
+        <h2>Criar Conta</h2>
+        <form onSubmit={handleSignUp}>
           <label>Email:</label>
           <br />
           <input
             type="email"
             className="input"
+            placeholder="E-mail"
             value={email}
             onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
               setEmail(e.target.value)
@@ -72,6 +70,7 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
           <input
             type="password"
             className="input"
+            placeholder="Senha"
             value={password}
             onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
               setPassword(e.target.value)
@@ -82,15 +81,15 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
           <br />
           {error && <div style={{ color: "red" }}>{error}</div>}
           <button className="button" type="submit">
-            Entrar
+            Cadastrar
           </button>
         </form>
         <p>
-          Não tem uma conta? <Link to="/register">Criar Conta</Link>
+          Já tem uma conta? <Link to="/login">Entrar</Link>{" "}
         </p>
       </div>
     </div>
   );
 };
 
-export default Login;
+export default SignUp;

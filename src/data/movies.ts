@@ -4,6 +4,7 @@ export type Movie = {
   posterUrl: string;
 };
 
+// REVERTIDO: A constante 'movies' é exportada diretamente
 export const movies: Movie[] = [
   {
     id: 1,
@@ -65,3 +66,5 @@ export const movies: Movie[] = [
       "https://br.web.img3.acsta.net/medias/nmedia/18/96/31/17/20459002.jpg",
   },
 ];
+
+// REMOVIDO: Funções getMovies, saveMovies, addMovie não são mais exportadas

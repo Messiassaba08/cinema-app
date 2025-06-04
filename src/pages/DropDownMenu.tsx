@@ -1,21 +1,25 @@
+// DropdownMenu.tsx
 import React, { useState, useRef, useEffect } from "react";
+import { Link } from "react-router-dom";
 import "./DropDownMenu.css";
 
 type Props = {
   isLoggedIn: boolean;
+  isAdminLoggedIn: boolean; // CORRIGIDO: Adicionada a prop isAdminLoggedIn
   onLogout: () => void;
 };
 
-const DropdownMenu: React.FC<Props> = ({ isLoggedIn }) => {
+const DropdownMenu: React.FC<Props> = ({
+  isLoggedIn,
+  isAdminLoggedIn,
+  onLogout,
+}) => {
   const [open, setOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
-      if (
-        menuRef.current &&
-        !menuRef.current.contains(e.target as Node)
-      ) {
+      if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
         setOpen(false);
       }
     };
@@ -24,8 +28,24 @@ const DropdownMenu: React.FC<Props> = ({ isLoggedIn }) => {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
+  const handleLinkClick = () => {
+    setOpen(false);
+  };
+
+  const handleLogoutClick = () => {
+    onLogout();
+    setOpen(false);
+  };
+
   return (
     <div className="dropdown-container" ref={menuRef}>
+      {isAdminLoggedIn && (
+        <span
+          style={{ color: "gold", fontWeight: "bold", marginRight: "10px" }}
+        >
+          ADMIN
+        </span>
+      )}
       <img
         src="/login.png"
         alt="Menu"
@@ -39,27 +59,53 @@ const DropdownMenu: React.FC<Props> = ({ isLoggedIn }) => {
           {!isLoggedIn ? (
             <>
               <li>
-                <a href="/login" className="block px-4 py-2 hover:bg-gray-100">
+                <Link
+                  to="/login"
+                  className="block px-4 py-2 hover:bg-gray-100"
+                  onClick={handleLinkClick}
+                >
                   Login
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="/register" className="block px-4 py-2 hover:bg-gray-100">
+                <Link
+                  to="/register"
+                  className="block px-4 py-2 hover:bg-gray-100"
+                  onClick={handleLinkClick}
+                >
                   Criar Conta
-                </a>
+                </Link>
               </li>
             </>
           ) : (
             <>
+              {isAdminLoggedIn && (
+                <li>
+                  <Link
+                    to="/admin/add-movie"
+                    className="block px-4 py-2 hover:bg-gray-100"
+                    onClick={handleLinkClick}
+                  >
+                    Adicionar Filme
+                  </Link>
+                </li>
+              )}
               <li>
-                <a href="/profile" className="block px-4 py-2 hover:bg-gray-100">
+                <Link
+                  to="/profile"
+                  className="block px-4 py-2 hover:bg-gray-100"
+                  onClick={handleLinkClick}
+                >
                   Perfil
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="/logout" className="block px-4 py-2 hover:bg-gray-100">
+                <button
+                  onClick={handleLogoutClick}
+                  className="block px-4 py-2 hover:bg-gray-100 w-full text-left"
+                >
                   Sair
-                </a>
+                </button>
               </li>
             </>
           )}

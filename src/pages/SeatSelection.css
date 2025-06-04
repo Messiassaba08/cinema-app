@@ -35,21 +35,43 @@
 .seat {
   width: 40px;
   height: 40px;
-  background-color: #00a00d;
+  background-color: #00a00d; /* Disponível */
   line-height: 40px;
   text-align: center;
   cursor: pointer;
   border-radius: 4px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 5px;
+  transition: background-color 0.2s ease-in-out;
+  color: white; /* Cor do texto do assento */
 }
 
 .seat.selected {
-  background-color: rgb(255, 230, 0);
+  background-color: #ffcc00; /* Selecionado (Amarelo) */
   color: black;
 }
 
+/* NOVO: Assentos Ocupados (Vermelho) - Dê a ele maior especificidade ou coloque-o por último para prevalecer */
+/* A ORDEM É CRUCIAL: Coloque esta regra DEPOIS de .seat.disabled, ou torne-a mais específica */
 .seat.occupied {
-  background-color: #e74c3c; 
+  background-color: #e74c3c !important; /* Usar !important para garantir que prevaleça */
   cursor: not-allowed;
+  opacity: 1 !important; /* Garante que não é afetado pela opacidade do disabled */
+}
+
+/* Assentos Desabilitados por Limite (Cinza) */
+.seat.disabled {
+  background-color: #555; /* Cor cinza para indicar desabilitado */
+  cursor: not-allowed;
+  opacity: 0.6; /* Levemente transparente */
+}
+
+/* Garantir que selecionado ainda funcione sobre desabilitado */
+.seat.selected.disabled {
+  background-color: #ffcc00 !important; /* Mantém amarelo se selecionado e desabilitado */
+  opacity: 0.6 !important; /* Mas mantém a opacidade de desabilitado */
 }
 
 .confirm-button {
@@ -64,5 +86,28 @@
 }
 
 .confirm-button:hover {
-  background-color: #0065a0; 
+  background-color: #0065a0;
+}
+
+/* Estilos para as legendas */
+.seat-legend {
+  width: 20px;
+  height: 20px;
+  border-radius: 4px;
+}
+
+.seat-legend.available {
+  background-color: #00a00d;
+}
+
+.seat-legend.selected {
+  background-color: #ffcc00;
+}
+
+.seat-legend.occupied {
+  background-color: #e74c3c;
+}
+
+.seat-legend.disabled {
+  background-color: #555;
 }
