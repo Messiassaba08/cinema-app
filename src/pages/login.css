@@ -1,32 +1,33 @@
 h2 {
-    font-size: 3rem;
+    font-size: 2rem; 
 }
 
 .login-container {
     display: flex;
-    height: 50rem;
     align-items: center;
     justify-content: center;
+    padding: 1rem;
+    min-height: 50vh;
 }
 
 .login {
     background-color: rgba(0, 0, 0, 0.5);
     box-shadow: 2px 4px 6px rgba(0, 0, 0, 0.3);
-    border-radius: 3%;
-    width: 40rem;
-    height: 30rem;
+    border-radius: 10px;
+    width: 100%;
+    max-width: 400px;
+    padding: 2rem;
     display: flex;
     flex-direction: column; 
     align-items: center;
-    padding-top: 2rem;
-    gap: 1.5rem; 
-    font-size: 25px;
+    gap: 1rem;
+    font-size: 1rem;
 }
 
 .input {
     width: 100%;
-    padding: 10px;
-    font-size: 16px;
+    padding: 0.75rem;
+    font-size: 1rem;
     border: 2px solid #ccc;
     border-radius: 5px;
     box-sizing: border-box;
@@ -36,22 +37,22 @@ h2 {
 .input:focus {
     border-color: #2980b9;
     outline: none;
-  }  
+}
 
 .button {
-    font-size: 20px;
+    font-size: 1rem;
     cursor: pointer;
     color: white;
     background-color: rgba(47, 0, 255, 0.562);
-    width: 15rem;
+    width: 100%;
+    max-width: 15rem;
     height: 2.5rem;
-    display: block;
-    border-radius: 5px;        
-    margin: 1rem auto; 
+    border-radius: 5px;
+    margin: 1rem auto 0;
     font-weight: bold;
-    border-style: none;
+    border: none;
 }
 
 .button:hover {
-    background-color: #0065a0; 
+    background-color: #0065a0;
 }
