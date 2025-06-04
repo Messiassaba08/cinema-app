@@ -3,10 +3,22 @@
   padding: 20px;
 }
 
+.back-button {
+  border: none;
+  width: 12rem;
+  height: 1.5rem;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.back-button:hover {
+  background-color: rgb(202, 202, 202);
+}
+
 .screen {
   margin: 20px auto;
-  width: 60%;
-  background: #ccc;
+  width: 30rem;
+  background: #526cff;
   padding: 10px;
   border-radius: 5px;
   font-weight: bold;
@@ -14,7 +26,7 @@
 
 .seat-grid {
   display: grid;
-  grid-template-columns: repeat(8, 40px);
+  grid-template-columns: repeat(4, 40px) 60px repeat(4, 40px);
   gap: 10px;
   justify-content: center;
   margin-top: 20px;
@@ -23,8 +35,7 @@
 .seat {
   width: 40px;
   height: 40px;
-  background-color: #eee;
-  border: 1px solid #ccc;
+  background-color: #00a00d;
   line-height: 40px;
   text-align: center;
   cursor: pointer;
@@ -32,16 +43,26 @@
 }
 
 .seat.selected {
-  background-color: #6c6;
+  background-color: rgb(255, 230, 0);
+  color: black;
+}
+
+.seat.occupied {
+  background-color: #e74c3c; 
+  cursor: not-allowed;
 }
 
 .confirm-button {
   margin-top: 20px;
   padding: 10px 20px;
   font-weight: bold;
-  background-color: #4287f5;
+  background-color: rgba(47, 0, 255, 0.562);
   color: white;
   border: none;
   border-radius: 5px;
   cursor: pointer;
+}
+
+.confirm-button:hover {
+  background-color: #0065a0; 
 }
