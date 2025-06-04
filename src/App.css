@@ -80,14 +80,14 @@
 }
 
 .movie-card {
-  padding: 10px;
+  margin: 1.1% auto;
+  padding: 20px;
   text-align: center;
 }
 
 .movie-card img {
-  border-radius: 8px;
+  border-radius: 10px;
   max-width: 100%;
-  height: auto;
 }
 
 .carousel-container {
@@ -119,6 +119,8 @@
   transform: scale(1.1);
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
   z-index: 1;
+  background-color: #00617c7e;
+  border-radius: 10px;
 }
 
 .arrow-button {
