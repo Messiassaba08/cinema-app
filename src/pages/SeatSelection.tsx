@@ -27,7 +27,7 @@ function SeatSelection() {
 
   return (
     <div className="seat-page">
-      <h2>Selecionar Assentos - {movie.title}</h2>
+      <h1>Selecionar Assentos - {movie.title}</h1>
 
       {/* Botão de Voltar */}
       <button onClick={() => navigate("/")} className="back-button">
@@ -35,26 +35,40 @@ function SeatSelection() {
       </button>
 
       <div className="screen">Tela</div>
-      <div className="seat-grid">
-        {Array.from({ length: ROWS * COLS }, (_, i) => {
-          const seat = `A${i + 1}`;
-          return (
-            <div
-              key={seat}
-              className={`seat ${
-                selectedSeats.includes(seat) ? "selected" : ""
-              }`}
-              onClick={() => toggleSeat(seat)}
-            >
-              {seat}
-            </div>
-          );
-        })}
-      </div>
+        <div className="seat-grid">
+          {Array.from({ length: ROWS * COLS }, (_, i) => {
+            const seat = `A${i + 1}`;
+            return (
+              <div
+                key={seat}
+                className={`seat ${
+                  selectedSeats.includes(seat) ? "selected" : ""
+                }`}
+                onClick={() => toggleSeat(seat)}
+              >
+                {seat}
+              </div>
+            );
+          })}
+        </div>
 
-      <button onClick={handleConfirm} className="confirm-button">
-        Confirmar Assentos
-      </button>
+        <button onClick={handleConfirm} className="confirm-button">
+          Confirmar Assentos
+        </button>
+        <div style={{ marginTop: "20px", display: "flex", justifyContent: "center", gap: "2rem" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: "5px" }}>
+            <div style={{ width: "20px", height: "20px", backgroundColor: "#00a00d", borderRadius: "4px" }}></div>
+            <span>Disponível</span>
+          </div>
+          <div style={{ display: "flex", alignItems: "center", gap: "5px" }}>
+            <div style={{ width: "20px", height: "20px", backgroundColor: "#ffcc00", borderRadius: "4px" }}></div>
+            <span>Selecionado</span>
+          </div>
+          <div style={{ display: "flex", alignItems: "center", gap: "5px" }}>
+            <div style={{ width: "20px", height: "20px", backgroundColor: "#e74c3c", borderRadius: "4px" }}></div>
+            <span>Ocupado</span>
+          </div>
+        </div>
     </div>
   );
 }
