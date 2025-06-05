@@ -86,7 +86,7 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
           </button>
         </form>
         <p>
-          Não tem uma conta? <Link to="/register">Criar Conta</Link>
+          Não tem uma conta? <Link className="register" to="/register">Criar Conta</Link>
         </p>
       </div>
     </div>

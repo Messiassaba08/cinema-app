@@ -85,7 +85,7 @@ const SignUp: React.FC = () => {
           </button>
         </form>
         <p>
-          Já tem uma conta? <Link to="/login">Entrar</Link>{" "}
+          Já tem uma conta? <Link className="register" to="/login">Entrar</Link>{" "}
         </p>
       </div>
     </div>

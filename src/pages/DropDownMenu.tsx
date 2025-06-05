@@ -100,12 +100,13 @@ const DropdownMenu: React.FC<Props> = ({
                 </Link>
               </li>
               <li>
-                <button
-                  onClick={handleLogoutClick}
-                  className="block px-4 py-2 hover:bg-gray-100 w-full text-left"
-                >
-                  Sair
-                </button>
+                <Link
+                    to="/profile"
+                    className="block px-4 py-2 hover:bg-gray-100"
+                    onClick={handleLogoutClick}
+                  >
+                    Sair
+                  </Link>
               </li>
             </>
           )}

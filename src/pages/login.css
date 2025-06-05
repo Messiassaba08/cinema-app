@@ -10,6 +10,16 @@ h2 {
     min-height: 50vh;
 }
 
+.register {
+    text-decoration: none;
+    color: #2980b9;
+}
+
+.register:hover {
+    text-decoration: none;
+    color: #024c7e;
+}
+
 .login {
     background-color: rgba(0, 0, 0, 0.5);
     box-shadow: 2px 4px 6px rgba(0, 0, 0, 0.3);
