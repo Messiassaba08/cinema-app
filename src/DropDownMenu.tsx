@@ -45,51 +45,54 @@ const DropdownMenu: React.FC<Props> = ({ isLoggedIn, onLogout }) => {
       />
 
       {open && (
-        <ul className="dropdown-menu">
-          {!isLoggedIn ? (
-            <>
-              <li>
-                <Link
-                  to="/login"
-                  className="block px-4 py-2 hover:bg-gray-100"
-                  onClick={handleLinkClick}
-                >
-                  Login
-                </Link>
-              </li>
-              <li>
-                <Link
-                  to="/register"
-                  className="block px-4 py-2 hover:bg-gray-100"
-                  onClick={handleLinkClick}
-                >
-                  Criar Conta
-                </Link>
-              </li>
-            </>
-          ) : (
-            <>
-              <li>
-                <Link
-                  to="/profile"
-                  className="block px-4 py-2 hover:bg-gray-100"
-                  onClick={handleLinkClick}
-                >
-                  Perfil
-                </Link>
-              </li>
-              <li>
-                {/* Botão de Sair com as mesmas classes de estilo dos Links */}
-                <button
-                  onClick={handleLogoutClick}
-                  className="block px-4 py-2 hover:bg-gray-100 w-full text-left"
-                >
-                  Sair
-                </button>
-              </li>
-            </>
-          )}
-        </ul>
+        <> {/* <-- ADICIONE ESTA LINHA */}
+          {/* CORREÇÃO: Adicionado role="menu" para acessibilidade e testes */}
+          <ul className="dropdown-menu" role="menu">
+            {!isLoggedIn ? (
+              <>
+                <li>
+                  <Link
+                    to="/login"
+                    className="block px-4 py-2 hover:bg-gray-100"
+                    onClick={handleLinkClick}
+                  >
+                    Login
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    to="/register"
+                    className="block px-4 py-2 hover:bg-gray-100"
+                    onClick={handleLinkClick}
+                  >
+                    Criar Conta
+                  </Link>
+                </li>
+              </>
+            ) : (
+              <>
+                <li>
+                  <Link
+                    to="/profile"
+                    className="block px-4 py-2 hover:bg-gray-100"
+                    onClick={handleLinkClick}
+                  >
+                    Perfil
+                  </Link>
+                </li>
+                <li>
+                  {/* Botão de Sair com as mesmas classes de estilo dos Links */}
+                  <button
+                    onClick={handleLogoutClick}
+                    className="block px-4 py-2 hover:bg-gray-100 w-full text-left"
+                  >
+                    Sair
+                  </button>
+                </li>
+              </>
+            )}
+          </ul>
+        </> /* <-- ADICIONE ESTA LINHA */
       )}
     </div>
   );

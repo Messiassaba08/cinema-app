@@ -1,5 +1,5 @@
 import React, { useState, FormEvent } from "react";
-import { useNavigate, Link } from "react-router-dom"; // Importe Link
+import { useNavigate, Link } from "react-router-dom";
 import "../pages/login.css"; // Assumindo que você quer usar o mesmo CSS para ambos
 
 // Interface para o tipo de usuário
@@ -51,9 +51,11 @@ const SignUp: React.FC = () => {
       <div className="login">
         <h2>Criar Conta</h2>
         <form onSubmit={handleSignUp}>
-          <label>Email:</label>
+          {/* MODIFICADO: Adicionado htmlFor e id para acessibilidade e testes */}
+          <label htmlFor="signup-email-input">Email:</label>
           <br />
           <input
+            id="signup-email-input" // Adicionado ID único para associação com a label
             type="email"
             className="input"
             placeholder="E-mail"
@@ -65,9 +67,11 @@ const SignUp: React.FC = () => {
           />
           <br />
           <br />
-          <label>Senha:</label>
+          {/* MODIFICADO: Adicionado htmlFor e id para acessibilidade e testes */}
+          <label htmlFor="signup-password-input">Senha:</label>
           <br />
           <input
+            id="signup-password-input" // Adicionado ID único para associação com a label
             type="password"
             className="input"
             placeholder="Senha"
@@ -85,7 +89,10 @@ const SignUp: React.FC = () => {
           </button>
         </form>
         <p>
-          Já tem uma conta? <Link className="register" to="/login">Entrar</Link>{" "}
+          Já tem uma conta?{" "}
+          <Link className="register" to="/login">
+            Entrar
+          </Link>{" "}
         </p>
       </div>
     </div>

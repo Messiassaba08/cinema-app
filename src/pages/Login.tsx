@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import "../pages/login.css";
-import { useNavigate, Link } from "react-router-dom"; // Importe Link também
+import { useNavigate, Link } from "react-router-dom";
 
 // Interface para o tipo de usuário
 interface User {
@@ -54,9 +54,11 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
       <div className="login">
         <h2>Login</h2>
         <form onSubmit={handleSubmit}>
-          <label>Email:</label>
+          {/* MODIFICADO: Adicionado htmlFor e id para acessibilidade e testes */}
+          <label htmlFor="email-input">Email:</label>
           <br />
           <input
+            id="email-input" // Adicionado ID para associação com a label
             type="email"
             className="input"
             value={email}
@@ -67,9 +69,11 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
           />
           <br />
           <br />
-          <label>Senha:</label>
+          {/* MODIFICADO: Adicionado htmlFor e id para acessibilidade e testes */}
+          <label htmlFor="password-input">Senha:</label>
           <br />
           <input
+            id="password-input" // Adicionado ID para associação com a label
             type="password"
             className="input"
             value={password}
@@ -86,7 +90,10 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
           </button>
         </form>
         <p>
-          Não tem uma conta? <Link className="register" to="/register">Criar Conta</Link>
+          Não tem uma conta?{" "}
+          <Link className="register" to="/register">
+            Criar Conta
+          </Link>
         </p>
       </div>
     </div>
