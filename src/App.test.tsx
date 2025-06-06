@@ -1,8 +1,8 @@
-import React from 'react';
-import { render, screen } from '@testing-library/react';
-import App from './App';
+import React from "react";
+import { render, screen } from "@testing-library/react";
+import App from "./App";
 
-test('renders without crashing', () => {
+test("renderiza título Filmes em Cartaz na rota raiz", () => {
   render(<App />);
-  expect(screen.getByText(/cinema/i)).toBeInTheDocument();
+  expect(screen.getByText(/Filmes em Cartaz/i)).toBeInTheDocument();
 });
