@@ -9,38 +9,44 @@ Messias da Silva Sabadini - 2021032188
 Wallace Eduardo Pereira - 2021032013
 
 ## Projeto
-TODO: adicionar sobre o projeto e como executar
+O projeto tem como objetivo simular um site de venda de ingressos de cinema. O usuário pode:
+- Criar conta
+- Fazer login
+- Ver os filmes disponíveis
+- Ele ganha dois ingressos por filme, podendo escolher os assentos. 
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+Além disso, o projeto exercita os princípios vistos na disciplina Teste de Software, tendo 31 testes de unidade, e usando o CI/CD com o GitHub actions, fazendo com que os testes e a cobertura sejam executados automaticamente a cada commit.
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+## Como Executar
 
-### `npm test`
+Para executar o projeto, é necessário ter instalado o Node.js. Caso não tenha, em qualquer sistema operacional instale por:
+- Vá até o website [Node.js download](https://nodejs.org/en/download), faça download do Node.js e instale. 
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+Após instalar, no diretório do projeto, execute-o com o comando:
+#### `npm start`
+Abra [http://localhost:3000](http://localhost:3000) para visualizar no navegador.
 
-### `npm run build`
+Para verificar se os testes unitários estão passando, execute o comando
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+#### `npm run test`
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+E poderá visualizar a suíte de testes, quantos testes passaram, quantos falharam e destes, quais falharam.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+Para ter uma visualização mais detalhada dos testes, incluindo a cobertura, execute o comando
 
-### `npm run eject`
+#### `npm test:cov`
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+Isso dará uma visualização melhor dos testes unitários, além de criar uma pasta chamada `coverage` com os resultados. Nessa pasta cria-se um arquivo html `index.html`, que, aberto no navegador, mostra uma interface gráfica com os resultados.
 
 ## Tecnologias
-TODO: falar sobre as tecnologias utilizadas
+Na criação do projeto foram foram utilizadas as tecnologias **Typescript**, para o front-end, **React**, para o back-end, **npm**, para gerenciamento dos pacotes, **Jest**, para verificação da cobertura e **GitHub** para versionamento de código e CI/CD.
+
+**Typescript** é uma linguagem fortemente tipada, sendo uma "sublinguagem" do JavaScript, com a diferença que o JavaScript não é tipado. 
+
+**React** é uma biblioteca JavaScript utilizada para construção de UI's, sendo utilizada principalmente em aplicações web interativas e reativas. Sua principal vantagem é criar componentes reutilizáveis que atualizam automaticamente quando dados mudam.
+
+**npm** é o gerenciador de pacotes do Node.js. Ele serve para instalar bibliotecas JavaScript, gerenciar dependências do projeto, executar scripts, entre outros.
+
+**Jest** é o framework de testes, que serve para garantir que o código esteja funcionando corretamente, testando funções, APIs, etc. Além disso ele oferece uma visualização detalhada dos resultados das execuções dos testes.
+
+**GitHub** é o repositório onde o código está sendo armazenado, servindo, além de armazenar, para criação de um projeto compartilhado, onde várias pessoas conseguem colaborar, servindo para executar CI/CD por meio do `actions` e diversas outras funcionalidades.
