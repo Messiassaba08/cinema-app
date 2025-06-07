@@ -28,5 +28,5 @@ jobs:
       - name: Upload coverage reports to Codecov
         uses: codecov/codecov-action@v5
         with:
-        token: ${{ a979380d-19cd-4e40-80f0-8c6f83e5668b.CODECOV_TOKEN }}
-        slug: Messiassaba08/cinema-app
+          token: ${{ secrets.CODECOV_TOKEN }} 
+          slug: Messiassaba08/cinema-app   
