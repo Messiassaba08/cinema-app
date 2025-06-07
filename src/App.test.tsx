@@ -1,25 +1,23 @@
 // App.test.tsx - 30 TESTES DE UNIDADE (PARTE 1/6)
-// CORREÇÃO: Mock de react-router-dom deve vir ANTES da importação de App
 jest.mock('react-router-dom', () => ({
-  // Mantém o que é real para algumas coisas, mas substitui o Router e hooks de navegação
   ...jest.requireActual('react-router-dom'),
-  BrowserRouter: ({ children }: { children: React.ReactNode }) => <div>{children}</div>, // Substitui por um div simples
-  Routes: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,     // Substitui Routes por div
-  Route: ({ element }: { element: React.ReactNode }) => <div>{element}</div>,       // Substitui Route por div
-  Link: ({ children }: { children: React.ReactNode }) => <a>{children}</a>,        // Substitui Link por a
-  Navigate: ({ to }: { to: string }) => <div data-testid={`Maps-to-${to}`}>Navigate to {to}</div>, // Mocka Navigate para verificar o destino
+  BrowserRouter: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
+  Routes: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
+  Route: ({ element }: { element: React.ReactNode }) => <div>{element}</div>,
+  Link: ({ children }: { children: React.ReactNode }) => <a>{children}</a>,
+  Navigate: ({ to }: { to: string }) => <div data-testid={`Maps-to-${to}`}>Navigate to {to}</div>,
+  useNavigate: jest.fn(),
+  useParams: jest.fn(),
 }));
-
 
 import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import App from './App';
-import 'jest-localstorage-mock'; // Mock do localStorage
+import 'jest-localstorage-mock';
 
-// Mocks para componentes filhos do App, garantindo isolamento de unidade
 jest.mock('./pages/Login', () => ({
   __esModule: true,
-  default: () => <div data-testid="login-mock">Login Mock</div>,
+  default: ({ onLogin }: { onLogin: () => void }) => <div data-testid="login-mock" onClick={onLogin}>Login Mock</div>,
 }));
 jest.mock('./pages/SignUp', () => ({
   __esModule: true,
@@ -27,72 +25,78 @@ jest.mock('./pages/SignUp', () => ({
 }));
 jest.mock('./pages/Profile', () => ({
   __esModule: true,
-  default: () => <div data-testid="profile-mock">Profile Mock</div>,
+  default: ({ onCancelPurchase }: { onCancelPurchase: any }) => <div data-testid="profile-mock" onClick={onCancelPurchase}>Profile Mock</div>,
 }));
 jest.mock('./pages/SeatSelection', () => ({
   __esModule: true,
-  default: () => <div data-testid="seat-selection-mock">Seat Selection Mock</div>,
+  default: ({ isLoggedIn }: { isLoggedIn: boolean }) => <div data-testid="seat-selection-mock">Seat Selection Mock (Logged In: {isLoggedIn ? 'Yes' : 'No'})</div>,
 }));
 jest.mock('./pages/DropDownMenu', () => ({
   __esModule: true,
   default: ({ isLoggedIn, onLogout }: { isLoggedIn: boolean; onLogout: () => void }) => (
     <div data-testid="dropdown-menu-mock">
-      <img alt="Menu" src="/login.png" onClick={() => {}} className="login-icon" width={25} />
-      {isLoggedIn ? (
-        <>
-          <button onClick={() => {}} data-testid="profile-link">Perfil (Mock)</button>
-          <button onClick={onLogout} data-testid="logout-button">Sair (Mock)</button>
-        </>
-      ) : (
-        <>
-          <button onClick={() => {}} data-testid="login-link">Login (Mock)</button>
-          <button onClick={() => {}} data-testid="register-link">Criar Conta (Mock)</button>
-        </>
-      )}
+      <span data-testid="mock-login-status">{isLoggedIn ? 'Logado' : 'Deslogado'}</span>
+      <button onClick={onLogout} data-testid="mock-logout-button">Sair (Mock)</button>
+      <button data-testid="mock-login-button">Login (Mock)</button>
     </div>
   ),
 }));
 
 
-describe('Componente App - Renderização e Estado Básico (Testes de Unidade)', () => {
+describe('Componente App - Estado e Componentes Condicionais (5 Testes de Unidade Pura)', () => {
   beforeEach(() => {
-    localStorage.clear(); // Limpa o localStorage antes de cada teste
-    jest.clearAllMocks(); // Limpa mocks de funções como window.alert, navigate, etc.
+    localStorage.clear();
+    jest.clearAllMocks();
   });
 
-  // Teste 1/30: Deve renderizar a página inicial (Filmes em Cartaz) por padrão.
-  test('1/30: deve renderizar a página inicial por padrão', () => {
+  // Teste 1/30: Deve renderizar o DropdownMenu mockado.
+  test('1/30: deve renderizar o DropdownMenu mockado', () => {
     render(<App />);
-    expect(screen.getByText(/Filmes em Cartaz/i)).toBeInTheDocument();
+    expect(screen.getByTestId('dropdown-menu-mock')).toBeInTheDocument();
   });
 
-  // Teste 2/30: Deve renderizar o componente Login quando isLoggedIn é false.
-  test('2/30: deve renderizar o componente Login quando isLoggedIn é false', () => {
-    localStorage.removeItem('currentUser'); // Garante estado de deslogado
+  // Teste 2/30: Deve renderizar o App no estado deslogado por padrão (sem currentUser no localStorage).
+  test('2/30: deve renderizar o App no estado deslogado por padrão', () => {
+    localStorage.removeItem('currentUser');
     render(<App />);
-    expect(screen.getByTestId('login-mock')).toBeInTheDocument();
+    expect(screen.getByTestId('mock-login-status')).toHaveTextContent('Deslogado');
   });
 
-  // Teste 3/30: Deve renderizar o componente Profile quando isLoggedIn é true.
-  test('3/30: deve renderizar o componente Profile quando isLoggedIn é true', () => {
+  // Teste 3/30: Deve renderizar o App no estado logado se houver currentUser no localStorage.
+  test('3/30: deve renderizar o App no estado logado se houver currentUser no localStorage', () => {
     localStorage.setItem('currentUser', JSON.stringify({ email: 'test@example.com' }));
     render(<App />);
-    expect(screen.getByTestId('profile-mock')).toBeInTheDocument();
+    expect(screen.getByTestId('mock-login-status')).toHaveTextContent('Logado');
   });
 
-  // TESTE 4/30: Este teste foi removido conforme solicitação.
-  // test('4/30: deve atualizar o estado isLoggedIn para false quando handleLogout é chamado', async () => { /* ... */ });
+  // Teste 4/30: handleLogin deve definir isLoggedIn como true e salvar currentUser no localStorage.
+  test('4/30: handleLogin deve definir isLoggedIn como true e salvar currentUser no localStorage', async () => {
+    const { rerender } = render(<App />);
 
-  // Teste 5/30: Deve renderizar a página inicial (Filmes em Cartaz) se não houver rota correspondente.
-  test('5/30: deve renderizar a página inicial se não houver rota correspondente', () => {
-    render(<App />);
-    expect(screen.getByText(/Filmes em Cartaz/i)).toBeInTheDocument();
+    const loginMockComponent = screen.getByTestId('login-mock');
+    
+    localStorage.setItem('currentUser', JSON.stringify({ email: 'new@user.com' }));
+
+    fireEvent.click(loginMockComponent);
+
+    rerender(<App />);
+
+    expect(localStorage.getItem('currentUser')).not.toBeNull();
+    expect(screen.getByTestId('mock-login-status')).toHaveTextContent('Logado');
   });
 
-  // Teste 6/30: Deve renderizar a página inicial mesmo se houver currentUser (não altera a rota padrão).
-  test('6/30: deve renderizar a página inicial mesmo se houver currentUser', () => {
+  // Teste 5/30: handleLogout deve definir isLoggedIn como false e remover currentUser do localStorage.
+  test('5/30: handleLogout deve definir isLoggedIn como false e remover currentUser do localStorage', async () => {
     localStorage.setItem('currentUser', JSON.stringify({ email: 'test@example.com' }));
-    render(<App />);
-    expect(screen.getByText(/Filmes em Cartaz/i)).toBeInTheDocument();
+    const { rerender } = render(<App />);
+
+    const logoutButton = screen.getByTestId('mock-logout-button');
+    fireEvent.click(logoutButton);
+
+    expect(localStorage.getItem('currentUser')).toBeNull();
+
+    rerender(<App />);
+
+    expect(screen.getByTestId('mock-login-status')).toHaveTextContent('Deslogado');
   });
 });

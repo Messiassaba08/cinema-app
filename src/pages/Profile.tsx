@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "./Profile.css";
 
-// Interfaces (mantidas consistentes)
 interface User {
   email: string;
   password?: string;
@@ -20,12 +19,11 @@ interface ProfileProps {
 }
 
 const Profile: React.FC<ProfileProps> = ({ onCancelPurchase }) => {
-  const navigate = useNavigate(); // useNavigate está sendo mockado no teste
+  const navigate = useNavigate();
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [userTickets, setUserTickets] = useState<Ticket[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
 
-  // Função para carregar ingressos do usuário do localStorage
   const loadUserTickets = (userEmail: string) => {
     const userTicketsKey = `tickets_${userEmail}`;
     const storedTickets = localStorage.getItem(userTicketsKey);
@@ -45,14 +43,11 @@ const Profile: React.FC<ProfileProps> = ({ onCancelPurchase }) => {
       setCurrentUser(user);
       loadUserTickets(user.email);
     } else {
-      // Quando localStorage.getItem('currentUser') é null, navigate('/login') é chamado.
-      // Em testes de unidade, useNavigate é mockado, então não há erro real, apenas a chamada é verificada.
       navigate("/login");
     }
     setLoading(false);
   }, [navigate]);
 
-  // UseEffect para ouvir mudanças no localStorage
   useEffect(() => {
     const handleStorageChange = (e: StorageEvent) => {
       if (currentUser && e.key === `tickets_${currentUser.email}`) {
@@ -75,14 +70,12 @@ const Profile: React.FC<ProfileProps> = ({ onCancelPurchase }) => {
     }
   };
 
-  // Renderização condicional para estado de carregamento
   if (loading) {
     return <div data-testid="profile-loading" className="profile-container">Carregando perfil...</div>;
   }
 
-  // Renderização condicional para usuário não logado (redirecionado por useEffect)
   if (!currentUser) {
-    return null; // O navigate já foi chamado, então não renderiza nada
+    return null;
   }
 
   return (
@@ -93,7 +86,6 @@ const Profile: React.FC<ProfileProps> = ({ onCancelPurchase }) => {
           <strong>Email:</strong>{" "}
           <span data-testid="profile-email">{currentUser.email}</span>
         </p>
-        {/* Adicione outras informações do usuário aqui, se houver */}
       </div>
 
       <div className="tickets-section">
