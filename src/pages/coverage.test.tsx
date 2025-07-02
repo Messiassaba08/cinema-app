@@ -1,6 +1,6 @@
 // coverage.test.tsx
 import React from "react";
-import { render, screen, fireEvent, act } from "@testing-library/react";
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import App from "../App";
 import { BrowserRouter } from "react-router-dom";
 
@@ -12,6 +12,27 @@ describe("App Component Coverage Tests", () => {
   beforeEach(() => {
     localStorage.clear();
   });
+
+  test("redireciona para login se acessar /profile sem login", async () => {
+    window.history.pushState({}, "", "/profile");
+    render(<App />);
+    expect(await screen.findByText(/Login/i)).toBeInTheDocument();
+  });
+
+  test("redireciona de /profile para login se não estiver logado", async () => {
+    localStorage.removeItem("currentUser");
+    window.history.pushState({}, "", "/profile");
+    render(<App />);
+    expect(await screen.findByText("Login")).toBeInTheDocument();
+  });
+
+  test("redireciona para /profile se estiver logado", async () => {
+    localStorage.setItem("currentUser", JSON.stringify({ email: "admin@dev.com" }));
+    window.history.pushState({}, "", "/profile");
+    render(<App />);
+    expect(await screen.findByText(/Informações do Perfil/i)).toBeInTheDocument();
+  });
+
 
   test("redireciona para login se acessar /profile sem login", async () => {
     window.history.pushState({}, "", "/profile");
@@ -34,6 +55,24 @@ describe("App Component Coverage Tests", () => {
     fireEvent.click(screen.getByRole("button", { name: /Entrar/i }));
 
     expect(await screen.findByAltText("Menu")).toBeInTheDocument();
+  });
+
+  test("carrossel de filmes é renderizado corretamente", async () => {
+    localStorage.setItem("currentUser", JSON.stringify({ email: "user@test.com" }));
+    window.history.pushState({}, "", "/");
+    render(<App />);
+    expect(await screen.findByText("Filmes em Cartaz")).toBeInTheDocument();
+    expect(screen.getAllByRole("link", { name: /.+/i }).length).toBeGreaterThan(0);
+  });
+
+  test("botões de scroll do carrossel funcionam", async () => {
+    localStorage.setItem("currentUser", JSON.stringify({ email: "user@test.com" }));
+    window.history.pushState({}, "", "/");
+    render(<App />);
+    const leftButton = await screen.findByRole("button", { name: "‹" });
+    const rightButton = await screen.findByRole("button", { name: "›" });
+    fireEvent.click(leftButton);
+    fireEvent.click(rightButton);
   });
 
   test("exibe e fecha o menu dropdown", async () => {
@@ -125,3 +164,37 @@ describe("App Component Coverage Tests", () => {
     expect(seat).not.toHaveClass("selected");
   });
 });
+// Test for the useEffect that listens for storage events
+test('deve atualizar o estado de login quando o localStorage é alterado externamente', async () => {
+    localStorage.setItem('currentUser', JSON.stringify({ email: 'test@example.com' }));
+    render(<App />);
+    expect(screen.getByTestId('mock-login-status')).toHaveTextContent('Logado');
+  
+    // Simula um evento de logout em outra aba
+    localStorage.removeItem('currentUser');
+    // Dispara o evento de storage manualmente no window
+    window.dispatchEvent(new StorageEvent('storage', {
+      key: 'currentUser',
+      newValue: null,
+    }));
+  
+    // Verifica se o estado foi atualizado para deslogado
+    await waitFor(() => {
+      expect(screen.getByTestId('mock-login-status')).toHaveTextContent('Deslogado');
+    });
+  
+    // Simula um evento de login em outra aba
+    const newUser = { email: 'another@user.com' };
+    localStorage.setItem('currentUser', JSON.stringify(newUser));
+    // Dispara o evento de storage novamente
+    window.dispatchEvent(new StorageEvent('storage', {
+        key: 'currentUser',
+        newValue: JSON.stringify(newUser),
+    }));
+    
+    // Verifica se o estado foi atualizado para logado
+    await waitFor(() => {
+        expect(screen.getByTestId('mock-login-status')).toHaveTextContent('Logado');
+    });
+  });
+  
