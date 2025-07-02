@@ -5,6 +5,7 @@ import "./DropDownMenu.css";
 type Props = {
   isLoggedIn: boolean;
   onLogout: () => void;
+  isAdminLoggedIn?: boolean; // Adicione o '?' aqui
 };
 
 const DropdownMenu: React.FC<Props> = ({ isLoggedIn, onLogout }) => {

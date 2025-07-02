@@ -1,4 +1,3 @@
-// App.test.tsx - 30 TESTES DE UNIDADE (PARTE 1/6)
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   BrowserRouter: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
