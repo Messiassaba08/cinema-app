@@ -102,7 +102,6 @@ function App() {
             <img src="/logo.png" alt="Logo" className="logo" />
           </Link>
         </div>
-        {/* MODIFICAÇÃO: Coerção de tipo para resolver o erro TS2741 */}
         <DropdownMenu
           {...({
             isLoggedIn: isLoggedIn,
@@ -144,7 +143,8 @@ function App() {
                     ‹
                   </button>
 
-                  <div className="carousel-track" id="carousel">
+                  {/* MODIFICAÇÃO APLICADA AQUI */}
+                  <div className="carousel-track" id="carousel" data-testid="carousel-track">
                     {movies.map((movie: Movie) => (
                       <div key={movie.id} className="movie-card">
                         <Link
