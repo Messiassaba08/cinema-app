@@ -9,7 +9,7 @@ import SignUp from "./pages/SignUp";
 import Profile from "./pages/Profile";
 
 // Interfaces para tipagem
-interface User {
+export interface User {
   email: string;
   password?: string;
   isAdmin?: boolean; // Adicionada propriedade opcional de admin
@@ -26,6 +26,13 @@ export interface Movie {
   id: number;
   title: string;
   posterUrl: string;
+}
+
+export interface Ticket {
+  movieId: number;
+  movieTitle: string;
+  seats: string[];
+  purchaseDate: string;
 }
 
 const App: React.FC = () => {
@@ -129,9 +136,16 @@ const App: React.FC = () => {
 
           {isLoggedIn ? (
             <Route
-              path="/profile"
-              element={<Profile onCancelPurchase={handleCancelPurchase} />}
-            />
+            path="/profile"
+            element={
+              <Profile
+                onCancelPurchase={handleCancelPurchase}
+                // Passe as funções do navegador como props
+                localStorageGetItem={localStorage.getItem.bind(localStorage)}
+                windowConfirm={window.confirm.bind(window)}
+              />
+            }
+          />
           ) : (
            
             <Route path="/profile" element={<Navigate to="/login" replace />} />
