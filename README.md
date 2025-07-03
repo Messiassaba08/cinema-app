@@ -39,7 +39,7 @@ Para ter uma visualização mais detalhada dos testes, incluindo a cobertura, ex
 Isso dará uma visualização melhor dos testes unitários, além de criar uma pasta chamada `coverage` com os resultados. Nessa pasta cria-se um arquivo html `index.html`, que, aberto no navegador, mostra uma interface gráfica com os resultados.
 
 ## Tecnologias
-Na criação do projeto foram foram utilizadas as tecnologias **Typescript**, para o front-end, **React**, para o back-end, **npm**, para gerenciamento dos pacotes, **Jest**, para verificação da cobertura e **GitHub** para versionamento de código e CI/CD.
+Na criação do projeto foram foram utilizadas as tecnologias **Typescript**, para o back-end, **React**, para o front-end, **npm**, para gerenciamento dos pacotes, **Jest**, para verificação da cobertura e **GitHub** para versionamento de código e CI/CD.
 
 **Typescript** é uma linguagem fortemente tipada, sendo uma "sublinguagem" do JavaScript, com a diferença que o JavaScript não é tipado. 
 
