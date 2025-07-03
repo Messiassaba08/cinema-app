@@ -1,11 +1,5 @@
 import React, { useState, useEffect } from "react";
-import {
-  BrowserRouter as Router,
-  Routes,
-  Route,
-  Link,
-  Navigate,
-} from "react-router-dom";
+import { Routes, Route, Link, Navigate } from "react-router-dom";
 import { movies } from "./data/movies";
 import SeatSelection from "./pages/SeatSelection";
 import Login from "./pages/Login";
@@ -14,12 +8,14 @@ import DropdownMenu from "./pages/DropDownMenu";
 import SignUp from "./pages/SignUp";
 import Profile from "./pages/Profile";
 
+// Interfaces para tipagem
 interface User {
   email: string;
   password?: string;
+  isAdmin?: boolean; // Adicionada propriedade opcional de admin
 }
 
-interface Ticket {
+export interface Ticket {
   movieId: number;
   movieTitle: string;
   seats: string[];
@@ -32,18 +28,31 @@ export interface Movie {
   posterUrl: string;
 }
 
-function App() {
-  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(() => {
-    return localStorage.getItem("currentUser") !== null;
-  });
+const App: React.FC = () => {
+  // Função para verificar o estado inicial do usuário
+  const getInitialUserState = () => {
+    const storedUser = localStorage.getItem("currentUser");
+    if (!storedUser) {
+      return { loggedIn: false, admin: false };
+    }
+    const user: User = JSON.parse(storedUser);
+    return { loggedIn: true, admin: user.isAdmin === true };
+  };
+
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(getInitialUserState().loggedIn);
+  // NOVO: Estado para verificar se o usuário é admin
+  const [isAdmin, setIsAdmin] = useState<boolean>(getInitialUserState().admin);
 
   const handleLogin = (): void => {
-    setIsLoggedIn(true);
+    const { loggedIn, admin } = getInitialUserState();
+    setIsLoggedIn(loggedIn);
+    setIsAdmin(admin); // NOVO: Atualiza o estado de admin no login
   };
 
   const handleLogout = (): void => {
     localStorage.removeItem("currentUser");
     setIsLoggedIn(false);
+    setIsAdmin(false); // NOVO: Reseta o estado de admin no logout
   };
 
   const handleCancelPurchase = (
@@ -85,8 +94,11 @@ function App() {
   };
 
   useEffect(() => {
+    // NOVO: Lógica atualizada para lidar com login/logout em outras abas
     const handleStorageChange = () => {
-      setIsLoggedIn(localStorage.getItem("currentUser") !== null);
+      const { loggedIn, admin } = getInitialUserState();
+      setIsLoggedIn(loggedIn);
+      setIsAdmin(admin);
     };
     window.addEventListener("storage", handleStorageChange);
     return () => {
@@ -95,18 +107,18 @@ function App() {
   }, []);
 
   return (
-    <Router>
+    <>
       <div className="menu-container">
         <div className="menu">
           <Link to="/">
             <img src="/logo.png" alt="Logo" className="logo" />
           </Link>
         </div>
+        {/* ALTERADO: Passando a nova propriedade `isAdminLoggedIn` */}
         <DropdownMenu
-          {...({
-            isLoggedIn: isLoggedIn,
-            onLogout: handleLogout,
-          } as React.ComponentProps<typeof DropdownMenu>)}
+          isLoggedIn={isLoggedIn}
+          isAdminLoggedIn={isAdmin}
+          onLogout={handleLogout}
         />
       </div>
 
@@ -129,7 +141,6 @@ function App() {
             element={
               <>
                 <h1>Filmes em Cartaz</h1>
-
                 <div className="carousel-container">
                   <button
                     className="arrow-button arrow-left"
@@ -142,8 +153,6 @@ function App() {
                   >
                     ‹
                   </button>
-
-                  {/* MODIFICAÇÃO APLICADA AQUI */}
                   <div className="carousel-track" id="carousel" data-testid="carousel-track">
                     {movies.map((movie: Movie) => (
                       <div key={movie.id} className="movie-card">
@@ -168,7 +177,6 @@ function App() {
                       </div>
                     ))}
                   </div>
-
                   <button
                     className="arrow-button arrow-right"
                     onClick={() => {
@@ -198,8 +206,8 @@ function App() {
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </div>
-    </Router>
+    </>
   );
-}
+};
 
 export default App;

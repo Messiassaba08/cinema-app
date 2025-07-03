@@ -1,14 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { movies, Movie } from "../data/movies"; // Certifique-se de que a interface Movie é exportada aqui
+import { movies, Movie } from "../data/movies";
 import "./SeatSelection.css";
 
 const ROWS = 5;
 const COLS = 8;
 const TOTAL_SEATS = ROWS * COLS;
-const MAX_TICKETS_PER_MOVIE = 2; // Definindo o limite máximo de ingressos
+const MAX_TICKETS_PER_MOVIE = 2;
 
-// Interfaces para User e Ticket (melhor definidas em um arquivo de tipos global)
 interface User {
   email: string;
   password?: string;
@@ -35,21 +34,17 @@ function SeatSelection({ isLoggedIn }: SeatSelectionProps) {
   const [userTicketsForThisMovie, setUserTicketsForThisMovie] =
     useState<number>(0);
 
-  // Função para carregar assentos ocupados e ingressos do usuário
   const loadSeatAndTicketData = () => {
-    // Carregar assentos ocupados para este filme
     const storedOccupiedSeats = localStorage.getItem(
       `occupiedSeats_movie_${id}`
     );
     if (storedOccupiedSeats) {
       setOccupiedSeats(JSON.parse(storedOccupiedSeats));
     } else {
-      setOccupiedSeats([]); // Reseta se não houver
+      setOccupiedSeats([]);
     }
 
-    // Carregar contagem de ingressos do usuário para este filme
     if (isLoggedIn && movie) {
-      // Só verifica se o usuário está logado e o filme é válido
       const currentUserString = localStorage.getItem("currentUser");
       if (currentUserString) {
         const currentUser: User = JSON.parse(currentUserString);
@@ -64,34 +59,28 @@ function SeatSelection({ isLoggedIn }: SeatSelectionProps) {
         ).length;
         setUserTicketsForThisMovie(count);
       } else {
-        setUserTicketsForThisMovie(0); // Se não houver currentUser, não há ingressos comprados
+        setUserTicketsForThisMovie(0);
       }
     } else {
-      setUserTicketsForThisMovie(0); // Se não estiver logado, não há ingressos comprados
+      setUserTicketsForThisMovie(0);
     }
-    // Sempre limpa os assentos selecionados ao recarregar os dados, para evitar estado inconsistente
     setSelectedSeats([]);
   };
 
-  // Este useEffect será executado na montagem/remontagem e quando suas dependências mudam
-  // A 'key' em App.tsx garante a remontagem quando isLoggedIn muda.
   useEffect(() => {
     loadSeatAndTicketData();
-    // O listener 'storage' para este componente é removido pois a 'key' em App.tsx já força a remontagem.
-  }, [id, isLoggedIn, movie]); // Depende de id, isLoggedIn e movie (para o movie.id)
+  }, [id, isLoggedIn, movie]);
 
   if (!movie) return <p>Filme não encontrado</p>;
 
   const toggleSeat = (seat: string): void => {
     if (occupiedSeats.includes(seat)) {
-      return; // Não permite selecionar assento ocupado
+      return;
     }
 
-    // Se o assento já estiver selecionado, permite desselecionar
     if (selectedSeats.includes(seat)) {
       setSelectedSeats((prev) => prev.filter((s) => s !== seat));
     } else {
-      // Se o assento NÃO estiver selecionado e adicioná-lo exceder o limite, impede
       if (
         userTicketsForThisMovie + selectedSeats.length >=
         MAX_TICKETS_PER_MOVIE
@@ -127,7 +116,6 @@ function SeatSelection({ isLoggedIn }: SeatSelectionProps) {
     }
     const currentUser: User = JSON.parse(currentUserString);
 
-    // Validação final antes de confirmar, usando a contagem atualizada
     if (
       userTicketsForThisMovie + selectedSeats.length >
       MAX_TICKETS_PER_MOVIE
@@ -135,21 +123,19 @@ function SeatSelection({ isLoggedIn }: SeatSelectionProps) {
       alert(
         `Você já possui ${userTicketsForThisMovie} ingresso(s) para este filme. Não é possível comprar mais que ${MAX_TICKETS_PER_MOVIE} no total.`
       );
-      // Recarrega os dados para garantir que a UI reflita o estado correto
       loadSeatAndTicketData();
       return;
     }
 
-    // Lógica de atualização de assentos ocupados e salvamento de ingressos
     const newOccupiedSeats = [...occupiedSeats, ...selectedSeats];
     localStorage.setItem(
       `occupiedSeats_movie_${id}`,
       JSON.stringify(newOccupiedSeats)
     );
-    setOccupiedSeats(newOccupiedSeats); // Atualiza o estado local para assentos ocupados
+    setOccupiedSeats(newOccupiedSeats);
 
     const newTicket: Ticket = {
-      movieId: movie!.id, // Usamos '!' pois já verificamos se movie existe
+      movieId: movie!.id,
       movieTitle: movie!.title,
       seats: selectedSeats,
       purchaseDate: new Date().toLocaleDateString("pt-BR", {
@@ -172,15 +158,13 @@ function SeatSelection({ isLoggedIn }: SeatSelectionProps) {
     alert(
       `Assentos selecionados: ${selectedSeats.join(", ")}. Compra confirmada!`
     );
-    setSelectedSeats([]); // Limpa a seleção atual
-    // Atualiza a contagem local de ingressos para este filme IMEDIATAMENTE após a compra
+    setSelectedSeats([]);
     setUserTicketsForThisMovie((prevCount) => prevCount + selectedSeats.length);
   };
 
   return (
     <div className="seat-page">
-      <h1>Selecionar Assentos - {movie?.title}</h1>{" "}
-      {/* Use movie?.title para segurança */}
+      <h1>Selecionar Assentos - {movie?.title}</h1>
       {isLoggedIn && userTicketsForThisMovie >= MAX_TICKETS_PER_MOVIE && (
         <p style={{ color: "red", fontWeight: "bold" }}>
           Você já atingiu o limite de {MAX_TICKETS_PER_MOVIE} ingressos para
@@ -203,7 +187,6 @@ function SeatSelection({ isLoggedIn }: SeatSelectionProps) {
           const seat = `A${i + 1}`;
           const isSelected = selectedSeats.includes(seat);
           const isOccupied = occupiedSeats.includes(seat);
-          // Determina se o assento está desabilitado (ocupado ou excedendo o limite)
           const isDisabled =
             isOccupied ||
             (!isSelected &&
@@ -216,7 +199,7 @@ function SeatSelection({ isLoggedIn }: SeatSelectionProps) {
               className={`seat ${isSelected ? "selected" : ""} ${
                 isOccupied ? "occupied" : ""
               } ${isDisabled ? "disabled" : ""}`}
-              onClick={() => !isDisabled && toggleSeat(seat)} // Só permite clique se não estiver desabilitado
+              onClick={() => !isDisabled && toggleSeat(seat)}
             >
               {seat}
             </div>
@@ -226,8 +209,6 @@ function SeatSelection({ isLoggedIn }: SeatSelectionProps) {
       <button
         onClick={handleConfirm}
         className="confirm-button"
-        // CORREÇÃO AQUI: A condição de 'disabled' do botão de confirmação está correta
-        // Verifica se não há assentos selecionados OU se a compra excede o limite.
         disabled={
           selectedSeats.length === 0 ||
           (isLoggedIn &&
