@@ -40,19 +40,19 @@ const App: React.FC = () => {
   };
 
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(getInitialUserState().loggedIn);
-  // NOVO: Estado para verificar se o usuário é admin
+  // Estado para verificar se o usuário é admin
   const [isAdmin, setIsAdmin] = useState<boolean>(getInitialUserState().admin);
 
   const handleLogin = (): void => {
     const { loggedIn, admin } = getInitialUserState();
     setIsLoggedIn(loggedIn);
-    setIsAdmin(admin); // NOVO: Atualiza o estado de admin no login
+    setIsAdmin(admin); // Atualiza o estado de admin no login
   };
 
   const handleLogout = (): void => {
     localStorage.removeItem("currentUser");
     setIsLoggedIn(false);
-    setIsAdmin(false); // NOVO: Reseta o estado de admin no logout
+    setIsAdmin(false); // Reseta o estado de admin no logout
   };
 
   const handleCancelPurchase = (
@@ -94,7 +94,7 @@ const App: React.FC = () => {
   };
 
   useEffect(() => {
-    // NOVO: Lógica atualizada para lidar com login/logout em outras abas
+    // Lógica atualizada para lidar com login/logout em outras abas
     const handleStorageChange = () => {
       const { loggedIn, admin } = getInitialUserState();
       setIsLoggedIn(loggedIn);
@@ -114,7 +114,7 @@ const App: React.FC = () => {
             <img src="/logo.png" alt="Logo" className="logo" />
           </Link>
         </div>
-        {/* ALTERADO: Passando a nova propriedade `isAdminLoggedIn` */}
+        {}
         <DropdownMenu
           isLoggedIn={isLoggedIn}
           isAdminLoggedIn={isAdmin}
@@ -133,6 +133,7 @@ const App: React.FC = () => {
               element={<Profile onCancelPurchase={handleCancelPurchase} />}
             />
           ) : (
+           
             <Route path="/profile" element={<Navigate to="/login" replace />} />
           )}
 

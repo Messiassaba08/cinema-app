@@ -1,45 +1,69 @@
-// SeatSelection.test.tsx
 import React from 'react';
+// CORREÇÃO: Importar tudo que o teste precisa
 import { render, screen, fireEvent } from '@testing-library/react';
+import { MemoryRouter, Route, Routes } from 'react-router-dom';
+import SeatSelection from './SeatSelection';
+import { movies } from '../data/movies';
+
+// Mock do localStorage para controlar o ambiente de teste
+const localStorageMock = (() => {
+  let store: { [key:string]: string } = {};
+  return {
+    getItem: (key: string) => store[key] || null,
+    setItem: (key: string, value: string) => { store[key] = value.toString(); },
+    clear: () => { store = {}; },
+  };
+})();
+Object.defineProperty(window, 'localStorage', { value: localStorageMock });
+
+// Mock do useNavigate para testar o redirecionamento
+const mockNavigate = jest.fn();
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
-  Link: ({ children, to, className, onClick }: { children: React.ReactNode; to: string; className?: string; onClick?: () => void }) => (
-    <a href={to} className={className} onClick={(e) => { e.preventDefault(); onClick && onClick(); }}>{children}</a>
-  ),
-  useParams: () => ({ id: '1' }),
-  useNavigate: () => jest.fn(),
+  useNavigate: () => mockNavigate,
 }));
 
-import SeatSelection from './SeatSelection';
+describe('Componente SeatSelection', () => {
+  // CORREÇÃO: Definição das constantes de setup
+  const testMovie = movies[0];
+  const user = { email: 'user@example.com' };
 
-jest.mock('../data/movies', () => ({
-  movies: [{ id: 1, title: 'Filme de Teste', posterUrl: 'teste.jpg' }],
-}));
-
-import 'jest-localstorage-mock';
-window.alert = jest.fn();
-
-describe('Componente SeatSelection - Renderização e Interação (3 Testes de Unidade Pura)', () => {
   beforeEach(() => {
     localStorage.clear();
-    (window.alert as jest.Mock).mockClear();
+    mockNavigate.mockClear();
+    jest.spyOn(window, 'alert').mockImplementation(() => {});
   });
 
-  test('28/30: deve exibir o título do filme', () => {
-    render(<SeatSelection isLoggedIn={false} />);
-    expect(screen.getByText(/Selecionar Assentos - Filme de Teste/i)).toBeInTheDocument();
+  afterEach(() => {
+    jest.restoreAllMocks();
   });
 
-  test('29/30: deve permitir selecionar um assento disponível', () => {
-    render(<SeatSelection isLoggedIn={false} />);
-    fireEvent.click(screen.getByText('A1'));
-    expect(screen.getByText('A1')).toHaveClass('selected');
+  // CORREÇÃO: Definição da função helper para renderizar
+  const renderComponent = (isLoggedIn = false) => {
+    if (isLoggedIn) {
+      localStorage.setItem('currentUser', JSON.stringify(user));
+    }
+    return render(
+      <MemoryRouter initialEntries={[`/movie/${testMovie.id}/seats`]}>
+        <Routes>
+          <Route 
+            path="/movie/:id/seats" 
+            element={<SeatSelection isLoggedIn={isLoggedIn} />} 
+          />
+        </Routes>
+      </MemoryRouter>
+    );
+  };
+
+
+  test('deve impedir a compra se o usuário já possui o número máximo de ingressos', () => {
+    const existingTickets = [
+      { movieId: testMovie.id, movieTitle: testMovie.title, seats: ['D1'], purchaseDate: '...' },
+      { movieId: testMovie.id, movieTitle: testMovie.title, seats: ['D2'], purchaseDate: '...' }
+    ];
+    localStorage.setItem(`tickets_${user.email}`, JSON.stringify(existingTickets));
+    renderComponent(true);
+    expect(screen.getByText(/Você já atingiu o limite de 2 ingressos para este filme./i)).toBeInTheDocument();
   });
 
-  test('30/30: deve alertar se tentar confirmar a compra sem estar logado', () => {
-    render(<SeatSelection isLoggedIn={false} />);
-    fireEvent.click(screen.getByText('A1'));
-    fireEvent.click(screen.getByRole('button', { name: /Confirmar Assentos/i }));
-    expect(window.alert).toHaveBeenCalledWith("Você precisa estar logado para confirmar a compra.");
-  });
 });

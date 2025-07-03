@@ -1,21 +1,82 @@
 import React from "react";
-import { render, screen, fireEvent, waitFor, act } from "@testing-library/react";
-import { MemoryRouter } from "react-router-dom";
+// CORREÇÃO: Adicionando 'waitFor' para lidar com testes assíncronos
+import { render, screen, fireEvent, act, waitFor } from "@testing-library/react";
 import App from "../App";
+import { MemoryRouter } from "react-router-dom";
+
+// Mocks das páginas para isolar o componente App
+jest.mock("../pages/Login", () => (props: any) => (
+  <div>
+    Login Mock
+    <button onClick={props.onLogin}>Log In</button>
+  </div>
+));
+
+jest.mock("../pages/SignUp", () => () => <div>SignUp Mock</div>);
+
+jest.mock("../pages/Profile", () => (props: any) => (
+  <div>
+    Profile Mock
+    <button
+      onClick={() =>
+        props.onCancelPurchase(
+          {
+            movieId: 1,
+            movieTitle: "Fake Movie",
+            seats: ["A1", "A2"],
+            purchaseDate: "2023-01-01",
+          },
+          "user@example.com"
+        )
+      }
+    >
+      Cancel Purchase
+    </button>
+  </div>
+));
+
+jest.mock("../pages/SeatSelection", () => (props: any) => (
+  <div>SeatSelection Mock - LoggedIn: {props.isLoggedIn ? "Yes" : "No"}</div>
+));
+
+jest.mock("../pages/DropDownMenu", () => (props: any) => (
+  <div>
+    DropdownMenu Mock
+    {props.isLoggedIn ? (
+      <button onClick={props.onLogout} data-testid="logout-btn">Logout</button>
+    ) : (
+      <span>Not logged in</span>
+    )}
+  </div>
+));
 
 describe("App component - isolated logic", () => {
   beforeEach(() => {
     localStorage.clear();
+    jest.spyOn(window, "alert").mockImplementation(() => {});
   });
 
-  it("renders homepage with expected content and navigates", () => {
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
+
+  it("renders homepage with carousel and navigates", () => {
+    const scrollByMock = jest.fn();
+    jest.spyOn(document, "getElementById").mockReturnValue({
+      scrollBy: scrollByMock,
+    } as any);
+
     render(
       <MemoryRouter initialEntries={["/"]}>
         <App />
       </MemoryRouter>
     );
 
-    expect(screen.getByText(/Filmes/i)).toBeInTheDocument(); // Ajuste conforme sua Home
+    expect(screen.getByText("Filmes em Cartaz")).toBeInTheDocument();
+
+    const rightArrow = screen.getByText("›");
+    fireEvent.click(rightArrow);
+    expect(scrollByMock).toHaveBeenCalledWith({ left: 300, behavior: "smooth" });
   });
 
   it("shows login page when not authenticated on /profile", () => {
@@ -24,8 +85,7 @@ describe("App component - isolated logic", () => {
         <App />
       </MemoryRouter>
     );
-
-    expect(screen.getByText(/Login/i)).toBeInTheDocument();
+    expect(screen.getByText("Login Mock")).toBeInTheDocument();
   });
 
   it("shows profile when authenticated on /profile", () => {
@@ -37,8 +97,7 @@ describe("App component - isolated logic", () => {
       </MemoryRouter>
     );
 
-    expect(screen.getByText(/Informações do Perfil/i)).toBeInTheDocument();
-    expect(screen.getByTestId("profile-email")).toHaveTextContent("user@example.com");
+    expect(screen.getByText("Profile Mock")).toBeInTheDocument();
   });
 
   it("shows SeatSelection when authenticated on /movie/1/seats", () => {
@@ -50,26 +109,33 @@ describe("App component - isolated logic", () => {
       </MemoryRouter>
     );
 
-    expect(screen.getByText(/Selecionar Assentos/i)).toBeInTheDocument();
+    expect(screen.getByText(/SeatSelection Mock/)).toBeInTheDocument();
   });
 
+  // CORREÇÃO: Teste agora é assíncrono e usa 'waitFor'
   it("responds to login state changes via storage event", async () => {
     render(
-      <MemoryRouter initialEntries={["/"]}>
+      <MemoryRouter>
         <App />
       </MemoryRouter>
     );
 
-    expect(localStorage.getItem("currentUser")).toBeNull();
+    expect(screen.getByText("Not logged in")).toBeInTheDocument();
 
-    // Simula login em outra aba
     act(() => {
-      localStorage.setItem("currentUser", JSON.stringify({ email: "user@example.com" }));
-      window.dispatchEvent(new StorageEvent("storage", { key: "currentUser", newValue: JSON.stringify({ email: "user@example.com" }) }));
+      // Seta o usuário no localStorage ANTES de disparar o evento
+      localStorage.setItem("currentUser", JSON.stringify({ email: "test@example.com" }));
+      window.dispatchEvent(
+        new StorageEvent("storage", {
+          key: "currentUser",
+          newValue: JSON.stringify({ email: "test@example.com" }),
+        })
+      );
     });
-
+    
+    // Espera a UI ser atualizada
     await waitFor(() => {
-      expect(screen.queryByText(/Login/i)).not.toBeInTheDocument();
+        expect(screen.getByTestId("logout-btn")).toBeInTheDocument();
     });
   });
 
@@ -77,33 +143,33 @@ describe("App component - isolated logic", () => {
     localStorage.setItem("currentUser", JSON.stringify({ email: "user@example.com" }));
 
     render(
-      <MemoryRouter initialEntries={["/"]}>
+      <MemoryRouter>
         <App />
       </MemoryRouter>
     );
 
-    // Aqui você deve simular o clique no logout,
-    // dependendo de como o logout está implementado,
-    // por exemplo um botão com data-testid="logout-button"
-    const logoutButton = screen.queryByTestId("logout-button");
-    if (logoutButton) {
-      fireEvent.click(logoutButton);
-      expect(localStorage.getItem("currentUser")).toBeNull();
-    }
+    fireEvent.click(screen.getByTestId("logout-btn"));
+    expect(localStorage.getItem("currentUser")).toBeNull();
+    expect(screen.getByText("Not logged in")).toBeInTheDocument();
   });
 
   it("cancels ticket and removes seats", () => {
     localStorage.setItem("currentUser", JSON.stringify({ email: "user@example.com" }));
-
-    // Preparar ticket no localStorage para teste de cancelamento
-    const userTicketsKey = `tickets_user@example.com`;
-    const ticket = {
-      movieId: 1,
-      movieTitle: "Filme Teste",
-      seats: ["A1", "A2"],
-      purchaseDate: new Date().toLocaleDateString(),
-    };
-    localStorage.setItem(userTicketsKey, JSON.stringify([ticket]));
+    localStorage.setItem(
+      "tickets_user@example.com",
+      JSON.stringify([
+        {
+          movieId: 1,
+          movieTitle: "Fake Movie",
+          seats: ["A1", "A2"],
+          purchaseDate: "2023-01-01",
+        },
+      ])
+    );
+    localStorage.setItem(
+      "occupiedSeats_movie_1",
+      JSON.stringify(["A1", "A2"])
+    );
 
     render(
       <MemoryRouter initialEntries={["/profile"]}>
@@ -111,18 +177,65 @@ describe("App component - isolated logic", () => {
       </MemoryRouter>
     );
 
-    const cancelButton = screen.getByTestId("cancel-button-1");
-    expect(cancelButton).toBeInTheDocument();
+    fireEvent.click(screen.getByText("Cancel Purchase"));
 
-    // Simular confirmação do cancelamento
-    jest.spyOn(window, "confirm").mockImplementation(() => true);
+    const updatedTickets = localStorage.getItem("tickets_user@example.com");
+    const updatedSeats = localStorage.getItem("occupiedSeats_movie_1");
 
-    fireEvent.click(cancelButton);
+    expect(updatedTickets).toEqual(JSON.stringify([]));
+    expect(updatedSeats).toEqual(JSON.stringify([]));
+    expect(window.alert).toHaveBeenCalledWith(
+      "Compra cancelada e assentos liberados com sucesso!"
+    );
+  });
+  
+  // CORREÇÃO: Teste agora é assíncrono e usa 'waitFor'
+  it("responds to logout state changes via storage event", async () => {
+    localStorage.setItem("currentUser", JSON.stringify({ email: "user@example.com" }));
 
-    // Verifica se os tickets foram removidos
-    const updatedTickets = JSON.parse(localStorage.getItem(userTicketsKey) || "[]");
-    expect(updatedTickets.length).toBe(0);
+    render(
+      <MemoryRouter>
+        <App />
+      </MemoryRouter>
+    );
 
-    jest.restoreAllMocks();
+    expect(screen.getByTestId("logout-btn")).toBeInTheDocument();
+
+    act(() => {
+      // Remove o usuário do localStorage ANTES de disparar o evento
+      localStorage.removeItem("currentUser");
+      window.dispatchEvent(
+        new StorageEvent("storage", {
+          key: "currentUser",
+          newValue: null,
+        })
+      );
+    });
+
+    // Espera a UI ser atualizada
+    await waitFor(() => {
+        expect(screen.getByText("Not logged in")).toBeInTheDocument();
+        expect(screen.queryByTestId("logout-btn")).not.toBeInTheDocument();
+    });
+  });
+
+  it("handles carousel button clicks gracefully if the carousel element is missing", () => {
+    const getElementByIdSpy = jest
+      .spyOn(document, "getElementById")
+      .mockReturnValue(null);
+
+    render(
+      <MemoryRouter initialEntries={["/"]}>
+        <App />
+      </MemoryRouter>
+    );
+
+    const rightArrow = screen.getByText("›");
+    
+    expect(() => {
+      fireEvent.click(rightArrow);
+    }).not.toThrow();
+    
+    expect(getElementByIdSpy).toHaveBeenCalledWith("carousel");
   });
 });
